@@ -4,21 +4,21 @@ if (
     class_exists('Google\\Client')
     || (
         class_exists('Composer\\InstalledVersions')
-        && version_compare(\Composer\InstalledVersions::getVersion('google/apiclient'), '2.7.2', '>')
+        && version_compare(\Composer\InstalledVersions::getVersion('google/apiclient'), '2.7.2', '<=')
     )
 ) {
-    return;
+    load_legacy_namespace();
 } elseif (
     // For older (pre-2.7.2) verions of google/apiclient
     file_exists(__DIR__ . '/../apiclient/src/Google/Client.php')
     && !class_exists('Google_Client', false)
 ) {
+    require_once(__DIR__ . '/../apiclient/src/Google/Client.php');
     load_legacy_namespace();
 }
 
 function load_legacy_namespace()
 {
-    require_once(__DIR__ . '/../apiclient/src/Google/Client.php');
     if (
         defined('Google_Client::LIBVER')
         && version_compare(Google_Client::LIBVER, '2.7.2', '<=')
